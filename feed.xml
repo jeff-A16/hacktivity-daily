@@ -5,8 +5,15 @@
 <link>https://jeff-a16.github.io/hacktivity-daily/</link>
 <description>每天 3 份 HackerOne 公开漏洞报告的中文讲解</description>
 <language>zh-CN</language>
-<lastBuildDate>Thu, 05 Nov 2026 08:05:00 +0000</lastBuildDate>
+<lastBuildDate>Fri, 06 Nov 2026 08:05:00 +0000</lastBuildDate>
 <atom:link href="https://jeff-a16.github.io/hacktivity-daily/feed.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>2026-11-06 Hacktivity 每日精选</title>
+<link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-06</link>
+<guid isPermaLink="false">hacktivity-daily-2026-11-06</guid>
+<pubDate>Fri, 06 Nov 2026 08:05:00 +0000</pubDate>
+<description><![CDATA[<p>2026-11-06 · 今日 3 份</p><h3>WordCamp 报告插件：授权判断写反，未登录者可导出主办人隐私 CSV（Unauthenticated private CSV export of Meetup organizer PII via broken authz check in WordCamp Reports）</h3><ul><li>WordPress · 高危 (High) · 访问控制缺陷 · 赏金：未公开 · 披露：2026-11-05 · <a href="https://hackerone.com/reports/3871816">报告链接</a></li><li><b>漏洞原理：</b>导出函数的校验条件把“或”写成了“且”，变成“nonce 无效并且用户有权限”才拒绝。结果匿名用户和低权限用户反而全部放行，能拿到含邮箱、地址等私有字段的 CSV。</li><li><b>发现与复现思路：</b>研究者对比同一插件里其他报表类的写法，发现只有这一处逻辑不同，再用真值表确认匿名请求会通过。典型的开源代码审计 + 横向对比。</li><li><b>新手可借鉴：</b>挂在 admin_init 之类钩子上的导出/下载功能常被忽视，可以不带登录直接请求；开源项目里“兄弟代码”对比是找逻辑漏洞的好办法。</li></ul><h3>wordpress.org 区域站：邀请功能未校验角色，编辑可把人提升为管理员（Rosetta: invite stores unvalidated role — Editor can assign site Administrator despite editable_roles）</h3><ul><li>WordPress · 高危 (High) · 访问控制缺陷 / 权限提升 · 赏金：未公开 · 披露：2026-11-05 · <a href="https://hackerone.com/reports/3942522">报告链接</a></li><li><b>漏洞原理：</b>系统本来只让编辑邀请用户，且在界面和过滤器里去掉了“管理员”选项。但邀请插件直接把请求里的 role 参数存起来，没有走允许角色的检查，用户接受邀请后就成了站点管理员。</li><li><b>发现与复现思路：</b>思路是界面下拉框没有的值，手动改请求参数提交，看服务端是否照单全收。关键证据是同一系统里其他路径会做角色白名单校验，这一条没有。</li><li><b>新手可借鉴：</b>前端隐藏的选项不等于后端禁止；测试多角色系统时，用低权限账号去改 role、group、permission 之类参数。</li></ul><h3>WordCamp 票务支付插件：付款没有与订单绑定，可不付钱拿到票（Instamojo CampTix: fail-open MAC + webhook Credit without binding payment to order）</h3><ul><li>WordPress · 高危 (High) · 访问控制缺陷 / 支付逻辑 · 赏金：未公开 · 披露：2026-11-05 · <a href="https://hackerone.com/reports/3941626">报告链接</a></li><li><b>漏洞原理：</b>支付回调既不向支付平台核实，也没记录这笔付款对应哪个订单和金额。签名校验失败时仍然推进订单状态，且决定订单的 token 来自未被签名保护的查询串，所以一笔便宜的真实付款可能让另一个订单变成“已支付”。</li><li><b>发现与复现思路：</b>研究者拿同插件里写得正确的 Razorpay 实现做参照，列出缺少的步骤：保存订单号与金额、校验后再改状态。再逐条说明三条路径如何各自绕过。</li><li><b>新手可借鉴：</b>测支付流程时重点看回调/Webhook：签名失败会怎样、订单与金额是否绑定、哪些参数没被签名覆盖。</li></ul><p>今日可练习：PortSwigger Web Security Academy 的 Access control（访问控制）、Business logic vulnerabilities（业务逻辑）主题。</p>]]></description>
+</item>
 <item>
 <title>2026-11-05 Hacktivity 每日精选</title>
 <link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-05</link>

@@ -5,8 +5,15 @@
 <link>https://jeff-a16.github.io/hacktivity-daily/</link>
 <description>每天 3 份 HackerOne 公开漏洞报告的中文讲解</description>
 <language>zh-CN</language>
-<lastBuildDate>Fri, 06 Nov 2026 08:05:00 +0000</lastBuildDate>
+<lastBuildDate>Sat, 07 Nov 2026 08:00:00 +0000</lastBuildDate>
 <atom:link href="https://jeff-a16.github.io/hacktivity-daily/feed.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>2026-11-07 Hacktivity 每日精选</title>
+<link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-07</link>
+<guid isPermaLink="false">hacktivity-daily-2026-11-07</guid>
+<pubDate>Sat, 07 Nov 2026 08:00:00 +0000</pubDate>
+<description><![CDATA[<p>2026-11-07 · 今日 3 份</p><h3>AI 智能体工具：确认提示被“隐藏标记”欺骗，批准看似无害的操作却执行了命令注入（Unescaped consent-prompt renderer (HTML()) enables concealed-approval OS command injection in strands-agents/tools use_computer — RCE）</h3><ul><li>AWS VDP · 中危 (Medium) · OS 命令注入 · 赏金：未公开 · 披露：2026-11-06 · <a href="https://hackerone.com/reports/4077800">报告链接</a></li><li><b>漏洞原理：</b>框架在执行危险操作前会弹出让人确认的提示，但提示文字被当作带样式的标记语言解析，没有转义。攻击者可在参数里夹带“隐藏/前景色等于背景色”的标记，让用户看不到真正会执行的那部分，而该参数又未经过滤直接拼进系统命令。</li><li><b>发现与复现思路：</b>研究者先审计“人工确认”这一层，确认渲染函数会解析标记；再追踪 app_name 参数，找到多处直接拼接进 shell 的位置，把两个缺陷串成链：用户点了同意，看到的和执行的不一样。</li><li><b>新手可借鉴：</b>别只盯输入点，“展示给人看的那一层”（确认框、日志、邮件预览）同样可能被注入；防护机制本身也是攻击面。</li></ul><h3>WordPress 自定义字段插件：未登录者能读到私密、草稿和加密文章的内容（Unauthenticated Disclosure of Private, Draft, and Password-Protected Post Content via Core Read-Permission Bypass in SCF Reference Fields）</h3><ul><li>WordPress · 高危 (High) · 信息泄露 / 访问控制 · 赏金：有（金额未公开） · 披露：2026-11-05 · <a href="https://hackerone.com/reports/4152553">报告链接</a></li><li><b>漏洞原理：</b>插件的“关联文章”字段取内容时，查询状态设成“任意”，也不检查当前访问者有没有阅读权限。于是 WordPress 核心会返回 404/401 的私密文章、草稿，甚至带明文密码的加密文章，页面渲染时却被原样输出。</li><li><b>发现与复现思路：</b>研究者拿核心的行为当基准（匿名访问返回 404/401），再对比插件的取数函数，发现旧版本只在 AJAX、REST 等入口补了权限检查，渲染路径漏掉了；并证明不需要提交表单，直接写入关联数据也能泄露。</li><li><b>新手可借鉴：</b>看到“之前修过类似漏洞”的补丁，就去找同一功能里没被覆盖的其他入口——补丁不完整是常见的新漏洞来源。</li></ul><h3>WordCamp 活动站：加密活动的报名名单，换个 REST 接口就能免密码读取（WordCamp Meta gpre: password-protected event RSVP list readable without password via /gpre/v1/.../rsvp-responses）</h3><ul><li>WordPress · 中危 (Medium) · 访问控制缺陷 · 赏金：有（金额未公开） · 披露：2026-11-05 · <a href="https://hackerone.com/reports/4029867">报告链接</a></li><li><b>漏洞原理：</b>官方活动插件的接口会检查“活动是否设了密码、访问者是否已输入”，但站点自己写的封装接口把权限回调设成了“永远通过”，也没复用那个检查，导致匿名者能拿到参会者姓名、用户 ID、主页链接等。</li><li><b>发现与复现思路：</b>把原版接口和封装接口用同一个活动各请求一次：前者返回 401，后者返回 200 和名单，差异一目了然。这是“同一功能的两个入口，防护不一致”的典型对比测试。</li><li><b>新手可借鉴：</b>遇到自定义的 /v1、/v2 或“包装”接口，拿它和原始接口做对照，往往能发现被漏掉的鉴权。</li></ul><p>今日练习：PortSwigger Web Security Academy 的「Access control」（访问控制）与「Information disclosure」主题。</p>]]></description>
+</item>
 <item>
 <title>2026-11-06 Hacktivity 每日精选</title>
 <link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-06</link>

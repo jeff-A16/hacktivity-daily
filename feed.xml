@@ -5,8 +5,15 @@
 <link>https://jeff-a16.github.io/hacktivity-daily/</link>
 <description>每天 3 份 HackerOne 公开漏洞报告的中文讲解</description>
 <language>zh-CN</language>
-<lastBuildDate>Sun, 08 Nov 2026 08:00:00 +0000</lastBuildDate>
+<lastBuildDate>Mon, 09 Nov 2026 01:20:00 +0000</lastBuildDate>
 <atom:link href="https://jeff-a16.github.io/hacktivity-daily/feed.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>2026-11-09 Hacktivity 每日精选</title>
+<link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-09</link>
+<guid isPermaLink="false">hacktivity-daily-2026-11-09</guid>
+<pubDate>Mon, 09 Nov 2026 01:20:00 +0000</pubDate>
+<description><![CDATA[<p>2026-11-09 · 今日 3 份</p><h3>Trellix 客户门户：注册域名校验绕过 + 密码重置激活待审账号 + 客户数据枚举（Broken Access Control on healthwatch.trellix.com）</h3><ul><li>Trellix · 中危 (Medium) · 访问控制缺陷 · 赏金：未公开 · 披露：2026-11-08 · <a href="https://hackerone.com/reports/3417759">报告链接</a></li><li><b>漏洞原理：</b>注册时邮箱域名只在前端校验，抓包改成任意域名就能建号；本应等管理员审批的账号，却能通过“忘记密码”流程自行设置密码并登录；登录后某个 API 又没有做权限检查，低权限用户能列出所有客户公司名和员工邮箱。</li><li><b>发现与复现思路：</b>研究者先在注册表单里填公司域名通过校验，再用 Burp 拦截把邮箱改成外部地址；随后走密码重置拿到可登录账号，最后顺着前端调用的 API 路径测试低权限能否读到不该看的数据。</li><li><b>新手可借鉴：</b>“审批/验证”类流程要检查每条旁路（重置密码、邀请、OAuth）；拿到最低权限账号后，把所有 API 逐个用该账号重放。</li></ul><h3>WordPress Gutenberg 表单块被滥用为开放邮件中继（Open Email Relay on WordPress Gutenberg Plugin via formAction parameter）</h3><ul><li>WordPress · 未评级 · 业务逻辑 / 滥用功能 · 赏金：已有赏金（金额未公开） · 披露：2026-11-08 · <a href="https://hackerone.com/reports/3460138">报告链接</a></li><li><b>漏洞原理：</b>实验性的 Form 块注册了无需登录的 AJAX 处理函数，并直接信任客户端传来的 formAction 作为收件人；所需 nonce 又被写在公开页面里，任何人都可借该站向任意邮箱发信，用于钓鱼垃圾邮件。</li><li><b>发现与复现思路：</b>思路是读页面源码找到嵌入的 nonce 与 ajaxUrl，再对照插件源码看 nopriv 钩子里收件人从哪来。审计开源项目时，搜 wp_ajax_nopriv_ 就是很好的入口。</li><li><b>新手可借鉴：</b>凡是“服务器替用户发邮件/请求”的功能，都问一句：收件人/目标是不是客户端可控？有无频率限制？</li></ul><h3>Weblate 的 Qt .ts 文件发现功能存在 XML 实体膨胀（Billion laughs entity expansion in Qt .ts discovery）</h3><ul><li>Weblate · 中危 (Medium) · XML 实体膨胀 / 资源耗尽 · 赏金：未公开 · 披露：2026-11-07 · <a href="https://hackerone.com/reports/4094236">报告链接</a></li><li><b>漏洞原理：</b>解析器处理上传的 .ts 文件时使用默认实体展开，攻击者在 DOCTYPE 里声明嵌套实体并在属性中引用；解析器自带的放大倍数限制挡得住小炸弹，却挡不住接近 1MB 上限的“胖炸弹”，一次解析就消耗大量 CPU。</li><li><b>发现与复现思路：</b>作者先测出小文件会被比例限制拦下，再把文件填充到刚好低于读取上限，让放大比例落在限制之内但绝对工作量很大，并与已有加固提交对比说明漏洞仍在。</li><li><b>新手可借鉴：</b>遇到“已有防护”时，想想防护的度量维度（比例 vs 绝对量），往往能找到绕过；XML 解析点（上传、导入）值得测 XXE/实体膨胀。</li></ul><p>今日练习（PortSwigger Web Security Academy）：Access control vulnerabilities、Business logic vulnerabilities、XXE injection。</p>]]></description>
+</item>
 <item>
 <title>2026-11-08 Hacktivity 每日精选</title>
 <link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-08</link>

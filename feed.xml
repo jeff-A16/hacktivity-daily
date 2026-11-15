@@ -5,8 +5,15 @@
 <link>https://jeff-a16.github.io/hacktivity-daily/</link>
 <description>每天 3 份 HackerOne 公开漏洞报告的中文讲解</description>
 <language>zh-CN</language>
-<lastBuildDate>Sat, 14 Nov 2026 01:17:21 +0000</lastBuildDate>
+<lastBuildDate>Sun, 15 Nov 2026 01:17:10 +0000</lastBuildDate>
 <atom:link href="https://jeff-a16.github.io/hacktivity-daily/feed.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>2026-11-15 Hacktivity 每日精选</title>
+<link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-15</link>
+<guid isPermaLink="false">hacktivity-daily-2026-11-15</guid>
+<pubDate>Sun, 15 Nov 2026 01:17:10 +0000</pubDate>
+<description><![CDATA[<p>2026-11-15 · 今日 3 份（均为「经典回顾」：过去 72 小时内未入选过的新披露只有 2 份 Node.js 报告，且都没有公开复现细节；今天周日，主题 API / GraphQL）</p><h3>【经典回顾】Shopify 账单 GraphQL 查询的 IDOR：改一个发票 ID 就能看别家店铺的账单（IDOR on GraphQL queries BillingDocumentDownload and BillDetails）</h3><ul><li>Shopify · 中危 (Medium) · 越权 / IDOR · 赏金：$5,000 · 披露：2024-02-08 · <a href="https://hackerone.com/reports/2207248">报告链接</a></li><li><b>漏洞原理：</b>后台查看账单用的两个 GraphQL 操作（<code>BillDetails</code> 和 <code>BillingDocumentDownload</code>）通过通用的 <code>node(id:)</code> 入口按发票 ID 取对象，但服务端没有核对这张发票是否属于当前店铺。发票 ID 又是可预测的递增数字，所以任何登录用户都能读到其他商家的邮箱、完整地址、发票内容、卡号后四位或 PayPal 邮箱。</li><li><b>发现与复现思路：</b>作者在自己店铺里打开一张发票，抓到对应的 GraphQL 请求，把变量里的发票 ID 换成相邻的数字重放，返回的却是别家店铺的数据。确认一次后就停手并上报，没有批量遍历。</li><li><b>新手可借鉴：</b>GraphQL 里 <code>node(id:)</code> 这类“按全局 ID 取任意对象”的入口最容易漏掉归属校验；账单、发票、导出下载这些冷门功能要逐个换 ID 试。测试时用自己的两个账号互相验证，碰到真实他人数据立刻停止。</li></ul><h3>【经典回顾】Exness 行情接口：GraphQL 参数直接决定服务器去请求哪个地址（SSRF in graphQL query (pwapi.ex2b.com)）</h3><ul><li>EXNESS · 中危 (Medium) · SSRF（盲打） · 赏金：$3,000 · 披露：2023-07-24 · <a href="https://hackerone.com/reports/1864188">报告链接</a></li><li><b>漏洞原理：</b>查询行情的 <code>allTicks</code> 有一个 <code>source</code> 参数，本意是指定数据来源，但服务端把它当成地址直接发起 GET 请求，而且可以填完整 URL，没有白名单。响应内容不会回显，属于盲 SSRF，不过仍可以用来探测内网端口、向内部服务发 GET 请求。</li><li><b>发现与复现思路：</b>作者留意到参数名和取值像“主机 / 来源”，就把它换成自己可观察的带外域名（如 Burp Collaborator），随后看到目标服务器发来的 DNS 和 HTTP 请求，从而证明请求确实由服务端发出。再换成完整 URL，确认路径也可控。</li><li><b>新手可借鉴：</b>看到 <code>source</code>、<code>url</code>、<code>host</code>、<code>callback</code>、<code>endpoint</code> 这类参数就填一个带外域名试试，GraphQL 的参数也一样。没有回显不等于没有漏洞，带外交互记录就是证据；证明到此为止，不要去扫别人的内网。</li></ul><h3>【经典回顾】HackerOne：邀请协作者后，请求里直接带出对方的私密邮箱（An attacker can can view any hacker email via /SaveCollaboratorsMutation operation name）</h3><ul><li>HackerOne · 高危 (High) · 信息泄露 · 赏金：$12,500 · 披露：2023-07-04 · <a href="https://hackerone.com/reports/2032716">报告链接</a></li><li><b>漏洞原理：</b>报告的“协作者”功能允许按用户名邀请其他白帽。邀请发出后对方还是待接受状态，但再次打开协作者编辑框时，前端发出的 <code>SaveCollaboratorsMutation</code> 请求里，被邀请人已经从用户名变成了注册邮箱——说明服务端提前把邮箱下发给了邀请方。于是只要知道用户名，就能拿到平台上任意白帽的邮箱。</li><li><b>发现与复现思路：</b>作者先提交一份测试报告，按用户名邀请目标为协作者，然后点编辑按钮并抓包，在第一条请求里就看到了对方邮箱，对方完全不需要接受邀请。整个过程只用到正常界面操作加抓包观察。</li><li><b>新手可借鉴：</b>不要只看页面上显示了什么，要看请求和响应里实际带了什么，“用户名换邮箱”这类泄露常常藏在界面不展示的字段里。邀请、分享、转让这种“还没被对方同意”的中间状态，是很值得盯的测试点。</li></ul><p>今日练习：PortSwigger Web Security Academy 的 <b>GraphQL API vulnerabilities</b>（配合 <b>API testing</b>），再做 <b>Access control</b> 里的 IDOR 实验和 <b>SSRF</b> 里的 Blind SSRF 实验。</p>]]></description>
+</item>
 <item>
 <title>2026-11-14 Hacktivity 每日精选</title>
 <link>https://jeff-a16.github.io/hacktivity-daily/#2026-11-14</link>
